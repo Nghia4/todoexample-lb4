@@ -1,31 +1,26 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {UserProject} from '../models';
 import {UserProjectRepository} from '../repositories';
-import {authenticate} from '@loopback/authentication';
+
 @authenticate('jwt')
 export class UserProjectController {
   constructor(
     @repository(UserProjectRepository)
     public userProjectRepository: UserProjectRepository,
-  ) {}
+  ) { }
 
   @post('/user-projects')
   @response(200, {

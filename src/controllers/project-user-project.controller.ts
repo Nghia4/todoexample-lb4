@@ -1,9 +1,10 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
   Filter,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -13,16 +14,17 @@ import {
   param,
   patch,
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
 import {Project, UserProject} from '../models';
 import {ProjectRepository} from '../repositories';
 
+@authenticate('jwt')
 export class ProjectUserProjectController {
   constructor(
     @repository(ProjectRepository)
     protected projectRepository: ProjectRepository,
-  ) {}
+  ) { }
 
   @get('/projects/{id}/user-projects', {
     responses: {

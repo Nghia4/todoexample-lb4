@@ -1,13 +1,15 @@
+import {authenticate} from '@loopback/authentication';
 import {repository} from '@loopback/repository';
-import {param, get, getModelSchemaRef} from '@loopback/rest';
-import {UserProject, Project} from '../models';
+import {get, getModelSchemaRef, param} from '@loopback/rest';
+import {Project, UserProject} from '../models';
 import {UserProjectRepository} from '../repositories';
 
+@authenticate('jwt')
 export class UserProjectProjectController {
   constructor(
     @repository(UserProjectRepository)
     public userProjectRepository: UserProjectRepository,
-  ) {}
+  ) { }
 
   @get('/user-projects/{id}/project', {
     responses: {

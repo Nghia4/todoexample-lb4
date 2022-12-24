@@ -1,13 +1,15 @@
+import {authenticate} from '@loopback/authentication';
 import {repository} from '@loopback/repository';
-import {param, get, getModelSchemaRef} from '@loopback/rest';
-import {Task, Project} from '../models';
+import {get, getModelSchemaRef, param} from '@loopback/rest';
+import {Project, Task} from '../models';
 import {TaskRepository} from '../repositories';
 
+@authenticate('jwt')
 export class TaskProjectController {
   constructor(
     @repository(TaskRepository)
     public taskRepository: TaskRepository,
-  ) {}
+  ) { }
 
   @get('/tasks/{id}/project', {
     responses: {
