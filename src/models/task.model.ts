@@ -1,4 +1,4 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {belongsTo, Entity, model, property} from '@loopback/repository';
 import {Project} from './project.model';
 import {User} from './user.model';
 
@@ -23,7 +23,7 @@ export class Task extends Entity {
 
   @property({
     type: 'string',
-    default: "Doing",
+    default: "ongoing",
   })
   status?: string;
 
@@ -54,7 +54,7 @@ export class Task extends Entity {
     default: false,
   })
   isDeleted?: boolean;
-  
+
   @belongsTo(() => Project, {name: 'ofProject'})
   projectId: string;
 
