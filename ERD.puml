@@ -1,0 +1,1670 @@
+@startuml VDES Entity Relationship Diagram
+
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "Activity" as activity {
+  -id: ObjectID <<generated>>
+  --
+  ~userId: ObjectID
+  ~customerId: ObjectID
+  ~eventId: ObjectID
+  ~leadId: ObjectID
+  ~companyId: ObjectID
+  ~promotionId: ObjectID
+  ~productId: ObjectID
+  ~packageId: ObjectID
+  ~supplierPrimaryInformationId: ObjectID
+  ~venueSpaceId: ObjectID
+  ~venueSpacePrimaryInformationId: ObjectID
+  ~quotationCompanyId: ObjectID
+  ~venuePrimaryInformationId: ObjectID
+  --
+  collection?: string
+  description?: string
+  platform: string <<website|vsm|extranet>>
+  method: string <<get|post|put|patch|delete>>
+  field: string
+  activityMethod: string
+  detail: Detail
+  'Detail: {
+  '  before: string
+  '  after: string
+  '}
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+entity "PartnerApplication" as partnerApplication {
+  -id: ObjectID <<generated>>
+  --
+  fullName: string
+  email: string
+  phoneNumber: string
+  brandName: string
+  address: string
+  title: string
+  type: string <<venue | supplier>>
+  businessType: string
+  businessRegistrationNumber: string
+  spaceTypes: string[]
+  eventGroups: string[]
+  linkFacebook: string
+  linkWebsite: string
+  shortDescription: string
+  status: string<<unconfirmed|confirmed|cooperated|cancelled|spam>>
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+
+entity "Notification" as notification {
+  -id: ObjectID <<generated>>
+  --
+  ~ownerId: ObjectID
+  --
+  collection: string
+  message: string
+}
+
+entity "User" as user {
+  -id: ObjectID <<generated>>
+  --
+  name: string
+  role: RoleEnum
+  '   RoleEnum {
+  '   MANAGER = 'manager',
+  '   MARKETING = 'marketing',
+  '   ACCOUNTING = 'accounting',
+  '   HR = 'hr',
+  '   OWNER = 'owner',
+  '   SALE = 'sale',
+  '   ADMIN = 'admin',
+  '   BUSINESS_DEVELOPMENT = 'business-development',
+  '   BUSINESS_DEVELOPMENT_LEADER = 'business-development-leader',
+  '   MARKETING_LEADER = 'marketing-leader',
+  '   CONSULTANT = 'consultant',
+  '   CONSULTANT_LEADER = 'consultant-leader',
+  '   EVENT_SERVICE = 'event-service',
+  '   EVENT_SERVICE_LEADER = 'event-service-leader',
+  '   ACCOUNTING_LEADER = 'accounting-leader',
+  '   HR_LEADER = 'hr-leader',
+  '   CUSTOMER = 'customer'
+  ' }
+  title: string
+  email: string
+  phoneNumber: string
+  status: boolean <<active/deactive>>
+  avatar: string
+  password: string
+  isInactive: boolean
+  resetPasswordToken: string
+  onlineStatus: boolean <<online/offline>>
+  isSubscribed: boolean
+  notificationSettings: NotificationSetting
+  ' NotificationSetting: {
+  '   timeNotification: any-update | every-twelve-hours
+  '   contentNotification: { contentApproved: boolean, newPromotion: boolean},
+  '   messageNotification: { newFeedback: boolean, newMessage: boolean, new-ticket: boolean},
+  '   orderNotification: {
+  '     hasAppointment: boolean,
+  '     newOrder: boolean,
+  '     newQuotation: boolean,
+  '     orderSuccess: boolean,
+  '     paymentComplete: boolean,
+  '   },
+  '   formalityNotification: {
+  '     email: boolean,
+  '     notificationCenter: boolean,
+  '     sms: boolean,
+  '   },
+  '   systemNotification: {
+  '     newSystemUpdate: false
+  '   }
+  ' }
+  ward: string
+  district: string
+  province: string
+  nation: string
+  identityNumber: string
+  address: string
+  facebookUserId?: string
+  googleUserId?: string
+  zaloUserId?: string
+  loginProvider?: string
+  isDefaultPassword?: boolean
+  defaultPasswordExpireDate?: Date
+}
+
+entity "Company" as company {
+  -id: ObjectID <<generated>>
+  --
+  ~createdBy: ObjectID
+  --
+  displayId: string
+  avatar: string
+  imgUrls?: string[]
+  videoUrls: string[]
+  name: string
+  brandName: string
+  slug: string
+  taxNumber: string
+  foundedYear: string
+  category: string
+  vietnameseDescription: string
+  englishDescription: string
+  nation: string
+  province: string
+  district: string
+  haveExclusiveOfffer: boolean
+  supplierActivityAreas: [{label, value}]
+  supplierActivityAreaIds?: string[]
+  address: string
+  agencyAddresses: [{name: string, address: string, materialFacilities: boolean}]
+  numberOfDepositTimes: number
+  depositPolicy: [{amount: string, numberDays: string, depositDayOptions: string,type: string}]
+  paymentMethod: [string]
+  cancelPolicy: string
+  otherPolicies: string
+  workingTime: [{day:string, from:string, to:string, status:string}] <<Mon-Sun>>
+  data:{ <<fieldName>>: [], <<fieldName2>>: [] }
+  questionAnswer: [{question: string, answer: string}]
+  eventTypes: [{eventGroupId: string, iconUrl: string, value: string}]
+  ' Count number of products and packages of a company
+  numberOfProduct: number
+  numberOfPackage: number
+  numberOfPromotion: number
+  imageLimitation?: number
+  serviceGroupIds: [string]
+  businessType: string <<enterprise|personal-business|individual-business-households>>
+  partnerType: string <<common|strategic|media|case-by-case-agency>>
+  spaceType: string
+  maxCapacity: number
+  numberOfSpace: number
+  ' The venue type, for Venue category only
+  status: string <<NOT_ACTIVE_YET|ACTIVE|EXPIRED|STOP_COOPERATE|TEMPORARILY_HIDDEN>>
+  accountNumberLimit: {department: string, [departmentName]: number}
+  isInactive: boolean,
+  minPrice: number
+  maxPrice: number
+  model360Url?: string
+  quotationApproveTime: number
+  quotationCustomerInformation: <<hide|show|show-a-part>>
+  videoPolicy: string <<not-allow|brand|brand-and-product>>
+}
+
+entity "Province" as province {
+  -id: ObjectID <<generated>>
+  --
+  --
+  label: string
+  value: string
+  type: string
+  nameWithType: string
+  code: string
+  isSearchable: boolean
+  isSupplierSearchable?: boolean
+}
+
+entity "Award" as award {
+  -id : ObjectID <<generated>>
+  --
+  ~companyId: ObjectID
+  --
+  name: string
+  imageUrl: string
+  description: string
+}
+
+entity "CompanyTag" as companyTag {
+  -id: ObjectID <<generated>>
+  --
+  ~tagId: ObjectID
+  ~companyId: ObjectID
+  --
+}
+
+entity "Tag" as tag {
+  -id: ObjectID <<generated>>
+  --
+  ~parentId: ObjectID
+  ~serviceId: ObjectID
+  ~tagTypeId: ObjectID
+  --
+  value: string
+  name: string
+  alias: string
+  appliedTo: string <<supplier|venue|customer|event|lead>>
+  isInactive: boolean
+  order: number <<rendering order>>
+  variation: string <<food-menu|beverage-menu|service|crm-customer>>
+}
+
+entity "TagType" as tagType {
+  -id: ObjectID <<generated>>
+  --
+  name: string
+  type: string
+}
+
+entity "Field" as field {
+  -id: ObjectID <<generated>>
+  --
+  --
+  fieldType: string
+  alias: string
+  name: string
+  dataType: string
+  isRequired: boolean
+  options: [string]
+  'options belongs to checkbox or radio fieldType, its dataType is array string
+  vendorType: string
+  order: number <<rendering order>>
+}
+
+entity "TagField" as tagField {
+  -id: ObjectID <<generated>>
+  --
+  ~tagId: ObjectID
+  ~fieldId: ObjectID
+  --
+}
+
+entity "PrimaryInformationField" as primaryInformationField {
+  -id: ObjectID <<generated>>
+  --
+  ~primaryInformationId: ObjectID
+  ~fieldId: ObjectID
+  --
+}
+
+entity "Product" as product {
+  -id: ObjectID <<generated>>
+  --
+  ~companyId: ObjectID
+  --
+  displayId: string
+  imageUrls: string[]
+  videoUrls: string[]
+  type: string <<venue/supplier>>
+  serviceType: string
+  name: string
+  price: [Price]
+  ' Price: {
+  '   value: number
+  '   unit: string
+  '   isInactive: boolean
+  '   feeIncluded: string
+  '   percentage?: number
+  '   feeValue?: number
+  '   percentageUnit: {
+  '     label: string
+  '     value: string
+  '   }
+  '   vatIncluded: boolean | null
+  '   vatRequired: boolean | null
+  '   vatValue: number
+  '   applyTime: {
+  '     byPeriod: {
+  '       checked: boolean
+  '       value: {
+  '         isLimitless: boolean
+  '         startDate: string
+  '         endDate: string
+  '       }
+  '     }
+  '     byDate: ByDate
+  '     bySession: ByDate
+  '   }
+  ' }
+  ' ByDate {
+  '   checked: boolean
+  '   value: [{
+  '     label: string
+  '     checked: boolean
+  '   }
+  ' }
+  serviceRate: number
+  description: string
+  sellingTime: SellingTime
+  ' SellingTime {
+  '   value: string
+  '   openDate: string | Date
+  ' }
+  status: string <<schedule/active/on-hole/expired>>
+  numberOfPromotion: number
+  isInactive: boolean
+  promotionAppliedAmount: string
+}
+
+entity "ProductTag" as productTag {
+  -id: ObjectID <<generated>>
+  --
+  ~productId: ObjectID
+  ~tagId: ObjectID
+  --
+}
+
+entity "SupplierProductDetail" as supplierProductDetail {
+  -id: ObjectID <<generated>>
+  --
+  ~productId: ObjectID
+  ~serviceId: ObjectID
+  ~serviceGroupId: ObjectID
+  --
+  type: string <<product|service>>
+  serviceType: string
+  ' serviceType for service
+  serviceRate: number
+}
+
+entity "VenueProductDetail" as venueProductDetail {
+  -id: ObjectID <<generated>>
+  --
+  ~productId: ObjectID
+  --
+  type: string <<food-menu|beverage-menu|service>>
+  componentDetail?: string
+}
+
+entity "ProductDetail" as productDetail {
+  -id: ObjectID <<generated>>
+  --
+  ~productId: ObjectID
+  ~packageId: ObjectID
+  ~componentPackageId: ObjectID
+  --
+  selectedPrice: number
+}
+
+entity "Package" as package {
+  -id: ObjectID <<generated>>
+  --
+  ~companyId: ObjectID
+  --
+  displayId: string
+  imageUrls: string[]
+  videoUrls: string[]
+  name: string
+  isInactive: boolean
+  description: string
+  level: string <<category>>
+  feeIncluded: string
+  vatIncluded: string
+  vatRequired: string
+  vatValue: number
+  price: number
+  comboPrice: number
+  comboPriceUnit: string
+  feeUnit?: string
+  feeType: string
+  feeValue: string | number
+  numberOfPromotion: number
+  status: string <<schedule/active/on-hold/expired>>
+  currency: string
+  defaultAppliedDate: Date
+  defaultExpiredDate: Date
+  promotionAppliedAmount: string <<only-one|more-than-one>>
+}
+
+entity "Promotion" as promotion {
+  -id: ObjectID <<generated>>
+  --
+  ~companyId: ObjectID
+  --
+  name: string
+  promotionType: string
+  ' Promotion type has 2 options is product promotion and seasonal promotion
+  imageUrl: string
+  applyDate: date
+  expireDate: date
+  isApplyWithProductTime: boolean
+  incentiveType: string
+  ' Incentive type has 2 options is discount and gift
+  percentDiscount: number
+  discountAmount: number
+  ' Promotion discount has 2 options is in percent or amount of money
+  giftType: string
+  ' Gift type has 2 options is gift products or create custom new gift
+  giftProductList: [string]
+  ' Contain list of selected product in gift product
+  giftPrice: number
+  giftInfo: string
+  conditionType: string
+  ' Condition type has 2 options is common and private
+  minimumDepositExpireDate: number
+  depositBeforeDate: date
+  cancelCondition: string
+  isNoRefund: boolean
+  anotherCondition: string
+  description: string
+  applyCondition?: string
+  isInactive: boolean
+  status?: string
+}
+
+entity "PackagePromotion" as packagePromotion {
+  -id: ObjectID <<generated>>
+  --
+  ~packageId: ObjectID
+  ~promotionId: ObjectID
+}
+
+entity "ProductPromotion" as productPromotion {
+  -id: ObjectID <<generated>>
+  --
+  ~productId: ObjectID
+  ~promotionId: ObjectID
+  --
+  appliedDate: date
+  expiredDate: date
+  ' appliedDate and expiredDate is intersection date range between product and promotion
+}
+
+entity "Order" as order {
+  -id: ObjectID <<generated>>
+  --
+  ~userId: ObjectID <<role: customer>>
+  ~promotionId: ObjectID
+  --
+  totalInvitation: number
+  specialNotes: string
+  totalPrice: number
+  currency: string
+  eventDate: date
+  bookingDate: date
+  status: string <<confirm, cancel, request>>
+  conditionsPolicies: string
+  paymentMilstones: number
+  actions: [string] <<accept/cancel>>
+}
+
+entity "OrderProduct" as orderProduct {
+  -id: ObjectID <<generated>>
+  --
+  ~orderId: ObjectID
+  ~productId: ObjectID
+}
+
+entity "Payment" as payment {
+  -id: ObjectID <<generated>>
+  --
+  ~orderId: ObjectID
+  --
+  type: string <<cash/card>>
+  amount: number
+  currency: string
+  status: string <<pending/done/cancel/refund>>
+}
+
+entity "Calendar" as calendar {
+  -id: ObjectID <<generated>>
+  --
+  ~productId: ObjectID
+  --
+  sitecheckTime: date
+  sitecheckAddress: date
+  milestones: [date]
+}
+
+entity "Media" as media {
+  -id: ObjectID <<generated>>
+  --
+  ~productId: ObjectID
+  ~promotionId: ObjectID
+  ~companyId: ObjectID
+  --
+  url: string
+  tags: [string]
+}
+
+entity "Lead" as lead {
+  -id: ObjectID <<generated>>
+  --
+  ~stageId: ObjectID
+  ~eventId: ObjectID
+  ~createdBy: ObjectID
+  --
+  displayId: string
+  name: string
+  type: string <<venue|supplier|supplier|wedding-planner>>
+  partnerType: string <<marketplace|agency>>
+  customerAttitude: string <<good|bad|normal>>
+  estimatedBudget: EstimatedBudget
+  ' EstimatedBudget: {
+  '   isRange: boolean
+  '   amount: number
+  '   fromValue: number
+  '   toValue: number
+  ' }
+  spaceType: string[]
+  serviceGroupId: string[]
+  quotationDueDate: date
+  suggestedPartner: string[]
+  specialRequirement: string
+  tags: string[]
+  stage: string
+  isInactive: boolean
+  guessGmv: number
+  pickupGmv: number
+  otbGmv: number
+}
+
+entity "Blog" as blog {
+  -id: ObjectID <<generated>>
+  --
+  ~promotionId: ObjectID
+  --
+  blogKind: string<<promotion/normal>>
+  eventCategory: { value: string, label: string}
+  contentCategory: { value: string, label: string}
+  promotionCategory: { value: string, label: string}
+  expireDate: date
+  title: string
+  content: {blocks:[{key:string, text:string}], entityMap:[EntityMap]}
+  'EntityMap
+  '{
+    'type: string
+    'mutability: string
+    'data:{
+      'src?:string
+      'alt?:string
+      'height?:string
+      'width?:string
+      'url?:string
+      'title?:string
+    '}
+  '}
+  tags: [string]
+  metaUrl: string
+  metaTitle: string
+  metaDescription: string
+  metaKeyword: string
+  metaThumbUrl: string
+  metaCoverUrl: string
+  views: number
+  isActive: boolean
+  isPinnedToTop?: boolean
+  isHidden?: boolean
+}
+
+entity "Moodboard" as moodboard {
+  -id: ObjectID <<generated>>
+  --
+  ~userId: ObjectID <<role: customer>>
+  --
+  title: string
+  source: string
+}
+
+entity "Banner" as banner {
+  -id: ObjectID <<generated>>
+  --
+  ~uploadedBy: ObjectID
+  --
+  name: string
+  order: number
+  type: string
+  imageURL: string
+  contentURL: string
+  displayView: string
+  location: string
+  position: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+entity "ContactMessage" as contactMessage {
+  -id: ObjectID <<generated>>
+  --
+  name: string
+  phoneNumber?: string
+  email: string
+  subject: string
+  content: string
+  agreeNotification: boolean
+}
+
+entity "EventGroup" as eventGroup {
+  -id: ObjectID <<generated>>
+  --
+  --
+  name: string
+  isSearchDefault?: boolean
+  orderNumber?: number
+  iconUrl?: string
+  imageUrl?: string
+  color?: string
+  eventTypes: string[]
+  isInactive: boolean
+  isWeddingGroup: boolean
+}
+
+entity "ServiceGroup" as serviceGroup {
+  -id: ObjectID <<generated>>
+  --
+  ~eventGroupId: ObjectID
+  --
+  name: string
+  iconUrl?: string
+  template: object
+  isInactive: boolean
+}
+
+entity "Service" as service {
+  -id: ObjectID <<generated>>
+  --
+  ~serviceGroupId: ObjectID
+  --
+  isInactive: boolean
+}
+
+entity "PrimaryInformation" as primaryInformation {
+  -id: ObjectID <<generated>>
+  --
+  ~parentId: ObjectID
+  --
+  name: string
+  type: string <<utility|space-utility|facility>>
+  vendorType: string<<supplier|venue>>
+  isInactive: boolean
+  spaceTypes?: string[]
+  isInactive: boolean
+}
+
+entity "VenueSpace" as venueSpace {
+  -id: ObjectID <<generated>>
+  --
+  ~companyId: ObjectID
+  --
+  name: string
+  imageUrls: string[]
+  property: string
+  description: string
+  roundTableCapacity: number
+  buffetCapacity: number
+  theaterCapacity: number
+  classRoomCapacity: number
+  uShapedTableCapacity: number
+  meetingRoomCapacity: number
+  longTableCapacity: number
+  isInactive: boolean
+}
+
+entity "VenueSpaceEventGroup" as venueSpaceEventGroup {
+  -id: ObjectID <<generated>>
+  --
+  ~venueSpaceId: ObjectID
+  ~eventGroupId: ObjectID
+  --
+}
+
+entity "CompanyService" as companyService {
+  -id: ObjectID <<generated>>
+  --
+  ~companyId: ObjectID
+  ~serviceId: ObjectID
+  --
+}
+
+entity "ServiceGroupPrimaryInformation" as serviceGroupPrimaryInformation {
+  -id: ObjectID <<generated>>
+  --
+  ~serviceGroupId: ObjectID
+  ~primaryInformationId: ObjectID
+  --
+}
+
+entity "VenueSpacePrimaryInformation" as venueSpacePrimaryInformation {
+  -id: ObjectID <<generated>>
+  --
+  ~venueSpaceId: ObjectID
+  ~primaryInformationId: ObjectID
+  --
+  isInactive: boolean
+}
+
+entity "SupplierPrimaryInformation" as supplierPrimaryInformation {
+  -id: ObjectID <<generated>>
+  --
+  ~primaryInformationId: ObjectID
+  ~companyId: ObjectID
+  --
+  isInactive: boolean
+}
+
+entity "VenuePrimaryInformation" as venuePrimaryInformation {
+  -id: ObjectID <<generated>>
+  --
+  ~primaryInformationId: ObjectID
+  ~companyId: ObjectID
+  --
+  isInactive: boolean
+}
+
+entity "BdManager" as bdManager {
+  -id: ObjectID <<generated>>
+  --
+  ~userId: ObjectID
+  ~companyId: ObjectID
+  --
+  type: string <<creator/manager>>
+  isInactive: boolean
+}
+
+entity "Customer" as customer {
+  id
+  —
+  ~linkedUserId: ObjectID
+  ~createdBy: ObjectID
+  —
+  brand: string[]
+  name: string
+  fullName: string
+  type: string<<cá Nhân|doanh nghiệp|ban ngành|đoàn thể>>
+  personalPhoneNumber: string
+  companyPhoneNumber: string
+  personalEmail: string
+  companyEmail: string
+  province: string
+  district: string
+  ward: string
+  personalAddress: string
+  companyAddress: string
+  status: string<<new|loyal|premier|standard|potential>>
+  numberOfEvent: number
+  numberOfLead: number
+  job: Job
+  ' Job: {
+  '   companyName: string
+  '   companyType: string <<nhỏ|vừa|tập đoàn|gia đình>>
+  '   academicLevel: string
+  '   field: string <<Lĩnh vực>>
+  '   title: string <<Chức danh>>
+  '   part: string <<Bộ phận>>
+  '   salary: string
+  ' }
+  socialInfo: SocialInfo
+  ' SocialInfo: {
+  '   facebookProfile: string
+  '   facebookName: string
+  '   instagramProfile: string
+  '   instagramName: string
+  '   zaloPhoneNumber: string
+  '   zaloName: string
+  ' }
+  birthDate: Date
+  gender: string
+  familyDetail: FamilyDetail
+  ' FamilyDetail: {
+  '   maritalStatus: string
+  '   numberOfChildren: number
+  '   accommodationStatus: string <<Ở cùng cha mẹ|Ở riêng>>
+  ' }
+  culture: Culture
+  ' Culture: {
+  '   area: string <<Vùng miềnn>>
+  '   style: string <<Hiện đại|Truyền thống>>
+  '   transformation: string <<Cá nhân hóa|Gia đình hóa>>
+  ' }
+  hobbies: string
+  interest: Interest
+  ' Interest: {
+  '   color
+  ' }
+  houseStatus: string <<ở trọ|nhà riêng|chung cư|biệt thự>>
+  carStatus: string <<có|không>>
+  personalIncome: number
+  companyBudget: number
+  lendDemand: boolean
+  class: string <<website|crm>>
+  source: string
+  level: string
+  isInactive: boolean
+}
+
+entity "CustomerManager" as customerManager {
+  -id: ObjectID <<generated>>
+  -
+  ~customerId: ObjectID
+  ~userId: ObjectID
+  -
+  type: string
+}
+
+entity "District" as district {
+  -id: ObjectID <<generated>>
+  --
+  label: string
+  value: string
+  type: string
+  nameWithType: string
+  path: string
+  pathWithType: string
+  code: string
+  parentCode: string
+}
+
+entity "Ward" as ward {
+  -code: string
+  --
+  label: string
+  value: string
+  name: string
+  type: string
+  slug: string
+  nameWithType: string
+  path: string
+  pathWithType: string
+  parentCode: string
+}
+
+entity "DisplayIdCount" as displayIdCount {
+  id: string
+  companyId: string
+  vendorType: string
+  productType: string
+  platformType: string
+  currentNumber: number
+}
+
+entity "SubscribedEmail" as subscribedEmail {
+  -id: ObjectID <<generated>>
+  --
+  emailId: string
+  isActive: boolean
+}
+
+entity "Stage" as stage {
+  -id: ObjectID <<generated>>
+  -
+  ~eventGroupId: ObjectID
+  -
+  name: string
+  isInactive: boolean
+  orderNumber: number
+  isWin: boolean
+  isLost: boolean
+}
+
+entity "Event" as event {
+  -id: ObjectID <<generated>>
+  --
+  brand: string[]
+  customerId: string
+  eventGroupId: string
+  createdBy: string
+  displayId: string
+  name: string
+  status: string<<lost|win|upcoming|finished|canceled|pending|potential>>
+  address: string
+  eventDate: EventDate
+  ' EventDate {
+  '   isRange: boolean
+  '   fixedDate: Date
+  '   startDate: Date
+  '   endDate: Date
+  ' }
+  eventTime: string
+  tags: string[]
+  estimatedBudget: EstimatedBudget
+  ' EstimatedBudget: {
+  '   isRange: boolean
+  '   amount: number
+  '   fromValue: number
+  '   toValue: number
+  ' }
+  numberOfTable: NumberOfTable
+  ' NumberOfTable: {
+  '   isRange: boolean
+  '   amount: number
+  '   fromValue: number
+  '   toValue: number
+  ' }
+  numberOfCustomer: NumberOfCustomer
+  ' NumberOfCustomer: {
+  '   isRange: boolean
+  '   amount: number
+  '   fromValue: number
+  '   toValue: number
+  ' }
+  potentialScore: number
+  location: string
+  province: string
+  districtIds: string[]
+  isInactive: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
+entity "PromotionSystem" as promotionSystem {
+  -id: ObjectID <<generated>>
+  --
+  companyId: string
+  eventGroupIds: string[]
+  createdBy: string
+  name: string
+  status: string
+  offerType: string <<exclusive-offer|vdes-offer|quotation-offer>>
+  description: string
+  applyCondition: string
+  termsOfPayment: string
+  coverUrl: string
+  thumbUrl: string
+  campaignUrl: string
+  isInactive: boolean
+  applyDate: Date
+  expireDate: Date
+  createdAt: Date
+  updatedAt: Date
+  slugUrl: string
+}
+
+entity "EventManager" as eventManager {
+  -id: ObjectID <<generated>>
+  -
+  ~eventId: ObjectID
+  ~userId: ObjectID
+  -
+  type: string
+}
+
+entity "LeadManager" as leadManager {
+  -id: ObjectID <<generated>>
+  --
+  type: string<<manager|follower>>
+  leadId: string
+  userId: string
+}
+
+entity "CompanyUser" as companyUser {
+  -id: ObjectID <<generated>>
+  --
+  ~userId: ObjectID
+  ~companyId: ObjectID
+  --
+  roles: string[]
+  title: string[]
+}
+
+entity "Permission" as permission {
+  -id: ObjectID <<generated>>
+  --
+  --
+  name: string
+
+  ' COMMON roles
+  manager: number
+  marketing: number
+  accounting: number
+  hr: number
+
+  ' EXTRANET roles
+  owner: number
+  sale: number
+
+  ' VSM roles
+  admin: number
+  businessDevelopment: number
+  businessDevelopmentLeader: number
+  marketingLeader: number
+  consultant: number
+  consultantLeader: number
+  eventService: number
+  eventServiceLeader: number
+  accountingLeader: number
+  hrLeader: number
+
+  ' WEBSITE roles
+  customer: number
+}
+
+
+entity "CrmActivity" as crmActivity {
+  -id: ObjectID <<generated>>
+  --
+  ~userId: ObjectID
+  ~eventId: ObjectID
+  ~leadId: ObjectID
+  ~customerId: ObjectID
+  --
+  applyTo?: string<<customer|partner>>
+  imageUrl?: string
+  fileUrl?: string
+  content?: string
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+
+entity "DisplayPosition" as displayPosition {
+  -id: ObjectID <<generated>>
+  --
+  ~companyId: ObjectID
+  ~productId: ObjectID
+  ~packageId: ObjectID
+  --
+  type: string<<venue|supplier|agency>>
+  location: string<<home-page|promotion-page|result-page>>
+  orderNumber: number
+  createdAt: Date
+  updatedAt: Date
+  }
+
+entity "BrandingInformation" as brandingInformation {
+  -id: ObjectID <<generated>>
+  --
+  --
+  type: string<<number-of-venue|number-of-supplier|number-of-event|number-of-customer|number-of-partner>>
+  value: number
+  createdAt: Date
+  updatedAt: Date
+}
+
+
+entity "MediaVideo" as mediaVideo {
+  -id: ObjectID <<generated>>
+  --
+  --
+  companyId: string
+  createdBy: string
+  createdAt: date
+  updatedAt: date
+  applyDate: date
+  expiredDate: date
+  partnerType: string<<venue, supplier, agency>>
+  mediaType: string<<home, home-product>>
+  period: string<<limitless, monthly, yearly>>
+  videoLimitation: VideoLimitation
+  ' VideoLimitation: {
+  '   isLimitless: boolean
+  '   value: number
+  }
+
+
+entity "DamFolder" as damFolder {
+  -id: ObjectID <<generated>>
+  --
+  ~createdBy: ObjectID
+  --
+  name: string
+  description: string
+  numberOfComponent: number
+  type: string<<image|video>>
+  createdAt: Date
+  updatedAt: Date
+}
+
+entity "DamComponent" as damComponent {
+  -id: ObjectID <<generated>>
+  --
+  ~createdBy: ObjectID
+  --
+  type: string<<image|video>>
+  componentUrl: string
+  name: string
+  fileType: string
+  departmentUse: string
+  purpose: number
+  recommendation: string
+  copyrightsOrRestriction: number
+  status: string
+  isInactive: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
+
+entity "Subscription" as subscription {
+  -id : ObjectID <<generated>>
+  --
+  --
+  name: string
+  type: string <<module | package>>
+  price: number
+}
+
+entity "CompanySubscription" as companySubscription {
+  -id : ObjectID <<generated>>
+  --
+  ~companyId: ObjectID
+  ~subscriptionId: ObjectID
+  --
+  paymentType: string
+  status: string
+}
+
+entity "Transaction" as transaction {
+  -id : ObjectID <<generated>>
+  --
+  ~companyId: ObjectID
+  ~subscriptionId: ObjectID
+  --
+}
+
+entity "Feature" as feature {
+  -id : ObjectID <<generated>>
+  --
+  --
+  name: string
+}
+
+entity "SubscriptionFeature" as subscriptionFeature {
+  -id : ObjectID <<generated>>
+  --
+  ~featureId: ObjectID
+  ~subscriptionId: ObjectID
+  --
+  isLimitless: boolean
+  limitNumber: number
+}
+
+entity "Quotation" as quotation {
+  -id: ObjectID <<generated>>
+  --
+  ~createdBy: ObjectID
+  ~leadId: ObjectID
+  --
+  displayId: string
+  uri: string
+  agencyProducts: product[]
+  type: string
+  totalInvitation: number
+  eventTypes: string[]
+  specialNotes: string
+  totalPrice: number
+  currency: string
+  templateId: string
+  eventDate: date
+  sendDate: date
+  class: string <<consultant/automation/quick>>
+  status: string <<read/unread>>
+  processPercentage: number <<[0:100]>>
+  actions: [string] <<preApproval/accept/cancel>>
+  venueBudget: QuotationBudget
+  supplierBudget: QuotationBudget
+  ' QuotationBudget: {
+  '   isRange: boolean
+  '   fixedValue: number
+  '   fromValue: number
+  '   toValue: number
+  ' }
+  quotationNumber: number
+}
+
+entity "QuotationCompany" as quotationCompany {
+  -id: ObjectID <<generated>>
+  --
+  ~companyId: ObjectID
+  ~quotationId: ObjectID
+  --
+  status: string <<not-open-yet/opened/confirmed>>
+  note: string
+}
+
+entity "QuotationUser" as quotationUser {
+  -id: ObjectID <<generated>>
+  --
+  ~approvedBy: ObjectID
+  ~quotationId: ObjectID
+  --
+  createdAt: Date
+}
+
+entity "QuotationPackage" as quotationPackage {
+  -id: ObjectID
+  --
+  ~packageId: ObjectID
+  ~quotationId: ObjectID
+  --
+  detail: package
+  numberOfOrder?: number
+}
+
+entity "QuotationProduct" as quotationProduct {
+  -id: ObjectID <<generated>>
+  --
+  ~productId: ObjectID
+  ~quotationId: ObjectID
+  --
+  detail: product
+  numberOfOrder?: number
+  thumbUrl?: string
+  imageUrls?: string[]
+}
+
+entity "QuotationPromotionSystem" as quotationPromotionSystem {
+  -id: ObjectID <<generated>>
+  --
+  ~promotionSystemId: ObjectID
+  ~quotationId: ObjectID
+  --
+  detail: promotionSystem
+}
+
+entity "QuotationTemplate" as quotationTemplate {
+  -id: ObjectID <<generated>>
+  --
+  ~eventGroupId: ObjectID
+  --
+  name: string
+  note: string
+  thumbUrl: string
+  imageUrl: string
+  status: string<<active|inactive>>
+  isInactive: boolean
+  isDefault: boolean
+  backgroundColor: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+entity "Booking" as booking {
+  -id: ObjectID <<generated>>
+  --
+  ~quotationId: ObjectID
+  --
+  displayId: string
+  brand: string<<liven|vdes|marry|ywp|unlock>>
+  customerId: string
+  eventId: string
+  leadId: string
+  operationStatus: string<<not-deposit-yet|deposited|cancel|completed>>
+  bookingType: string<<venue|supplier|other>>
+  eventDate: Date
+  eventTime: string
+  numberOfGuest: number
+  numberOfTable: number
+  contractType: string<<marketplace|agency>>
+  contractUrl: string[]
+  totalPrice: object
+
+  createdAt: Date
+  updatedAt: Date
+}
+
+entity "BookingCompany" as quotationCompany {
+  -id: ObjectID <<generated>>
+  --
+  ~companyId?: ObjectID
+  ~bookingId: ObjectID
+  --
+  partner?: object
+  createdAt: Date
+  updatedAt: Date
+
+  bookingCompanies: string
+}
+
+entity "BookingProduct" as quotationCompany {
+  -id: ObjectID <<generated>>
+  --
+  ~productId?: ObjectID
+  ~bookingId: ObjectID
+  --
+
+  numberOfOrder: number
+  product: Product
+  agencyProduct?: object
+  createdAt: Date
+  updatedAt: Date
+
+  bookingProducts: string
+}
+
+entity "BookingPackage" as quotationCompany {
+  -id: ObjectID <<generated>>
+  --
+  ~packageId: ObjectID
+  ~bookingId: ObjectID
+  --
+
+  numberOfOrder: number
+  package: Package
+  createdAt: Date
+  updatedAt: Date
+
+  bookingPackages: string
+}
+
+entity "BookingPromotion" as quotationCompany {
+  -id: ObjectID <<generated>>
+  --
+  ' ~promotionId: ObjectID
+  ~bookingId: ObjectID
+  ~promotionId: ObjectID
+  --
+  promotion: Promotion
+  createdAt: Date
+  updatedAt: Date
+
+  bookingPromotions: string
+}
+
+entity "BookingPayment" as bookingPayment {
+  -id: ObjectID <<generated>>
+  --
+  ~bookingId: ObjectID
+  --
+  paymentContent: string
+  paymentDate: Date
+  value: number
+  unit: string<<VND|USD|SGD>>
+  status: string<<not-paid|paid|partly-paid>>
+  order: number
+}
+
+entity "BookingDisplayIdCount" as bookingDisplayIdCount {
+  id: string
+  countType: <<vdes|marry|ywp|unlock>>
+  currentNumber: number
+}
+
+entity "Invoice" as invoice {
+  -id: ObjectID <<generated>>
+  --
+  ~bookingId: ObjectID
+  ~transactionId: ObjectID
+  --
+  amount: number
+  paymentType: string <<cash|credit-card>>
+}
+
+entity "Channel" as channel {
+  -id: ObjectID <<generated>>
+  --
+  ~leadId: ObjectID
+  ~vsmUserId: ObjectID
+}
+
+entity "Message" as message {
+  -id: ObjectID <<generated>>
+  --
+  ~senderId: ObjectID
+  ~channelId: ObjectID
+  --
+  content: string
+  attachments: string[]
+  createdAt: Date
+}
+
+entity "ExtranetDashboard" as extranetDashboard {
+  -id: ObjectID <<generated>>
+  --
+  --
+  companyName: string
+  dateOfSignContract: Date
+  numberOfQuotations: number
+}
+
+entity "Sitecheck" as sitecheck {
+  -id: ObjectID <<generated>>
+  --
+  ~createdBy: ObjectID
+  ~quotationId: ObjectID
+  ~venueId: ObjectID
+  ~leadId: ObjectID
+  ~assignTo: ObjectID
+  -
+  displayId: string <<generated>>
+  status?: string<finish|confirmed|schedule>
+  scheduleDate: Date
+  type: string<venue|supplier|mixed>
+  note: string
+  province?: string
+  district?: string
+  ward?: string
+  address?: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+entity "SitecheckAssignee" as sitecheckAssignee {
+  -id: ObjectID <<generated>>
+  --
+  ~sitecheckId: ObjectID
+  ~userId: ObjectID
+}
+
+entity "SitecheckVenue" as sitecheckVenue {
+  -id: ObjectID <<generated>>
+  --
+  ~sitecheckId: ObjectID
+  ~companyId: ObjectID
+}
+
+entity "RawLead" as rawLead {
+  -id: ObjectID <<generated>>
+  --
+  ~eventGroupId: ObjectID
+  ~companyId: ObjectID
+  ~userId: ObjectID
+  ~productId: ObjectID
+  ~packageId: ObjectID
+  ~spaceId: ObjectID
+  -
+  companyCategory: string<venue|supplier|undefined>
+  venueType: string
+  isWebsiteUser: boolean
+  sourceType: string<organic|marketing>
+  marketingSource: string<backlink|facebook|google|zalo>
+  pageSource: string
+  leadName: string
+  leadPhoneNumber: string
+  status: string<new|contacted|qualified|spam|no-demand|can-not-contact>
+  method: string<orderForm|popup>
+  eventDate: Date
+
+  createdAt: Date
+  updatedAt: Date
+}
+
+entity "LivenService" as livenService {
+  -id: ObjectID <<generated>>
+  --
+  ~createdBy: ObjectID
+  -
+  displayId: string <<generated>>
+  name: string
+  brand: string<vdes|marry|ywp|unlock>
+  segment: string
+  description: string
+  price: number
+  unit : string
+  vatIncluded: string<included|not-included>
+  vatValue: number
+  vatRequired: string<required|not-required>
+  finalPrice: number
+  isInactive: boolean
+  status?: string<active|on-hold>
+  imageUrls: string[]
+  createdAt: Date
+  updatedAt: Date
+}
+
+entity "LivenServiceDisplayIdCount" as livenServiceDisplayIdCount {
+  -id: ObjectID <<generated>>
+  --
+  countType: string<vdes|marry|ywp|unlock>
+  currentNumber: number
+}
+
+entity "LoginHistory" as loginHistory {
+  -id: ObjectID <<generated>>
+  --
+  ~userId: ObjectID
+  --
+  loginTime: Date
+  loginLocation: string
+  loginIp: string
+}
+
+booking ||..|{ invoice
+
+channel ||..|| lead
+channel ||..|| user
+channel ||..|{ message
+
+customer ||..o{ activity
+customer ||..o{ crmActivity
+customer ||..o{ eventManager
+customer ||..|{ event
+customer ||..o{ customerManager
+customer ||..o{ lead
+
+company ||..o{ award
+company ||..o{ activity
+company ||..o{ bdManager
+company ||..o{ companyUser
+company ||..o{ companyTag
+company ||..o{ companyService
+company ||..o{ media
+company ||..o{ notification
+company ||..o{ package
+company ||..o{ venueSpace
+company ||..o{ product
+company ||..o{ quotationCompany
+company ||..o{ transaction
+company ||..o{ companySubscription
+company ||..o{ activity
+company ||..o{ promotionSystem
+
+displayPosition ||..|| company
+damFolder ||..|| user
+damComponent ||..|| user
+
+damFolder ||..o{ damComponent
+damComponent ||..|| damFolder
+
+lead ||..o{ activity
+lead ||..o{ crmActivity
+lead }o..|| stage
+lead ||..|| customer
+lead ||..|{ quotation
+
+loginHistory ||..|| user
+
+event ||..o{ activity
+event ||..o{ crmActivity
+event ||..|{ lead
+event ||..|{ eventManager
+event ||..|| eventGroup
+
+tag ||..o{ tagField
+tag ||..o{ companyTag
+tag ||..o{ productTag
+tag ||..o{ tag
+tagType ||..o{ tag
+field ||..o{ tagField
+field ||..o{ primaryInformationField
+primaryInformation ||..o{ primaryInformationField
+
+user ||..o{ activity
+user ||..o{ bdManager
+user ||..o{ crmActivity
+user ||..o{ companyUser
+user ||..o{ notification
+user ||..o{ lead
+user ||..o{ moodboard
+user ||..o{ order
+user ||..o{ chatMessage
+user ||..|| customer
+user ||..o{ customerManager
+user ||..|{ eventManager
+user ||..o{ damFolder
+user ||..o{ damComponent
+user ||..|{ message
+user ||..|{ quotation
+user ||..o{ quotationUser
+user ||..o{ banner
+user ||..o{ sitecheckAssignee
+user ||..o{ livenService
+user ||..|{ loginHistory
+
+promotion ||..o{ blog
+promotion ||..o{ productPromotion
+promotion ||..o{ packagePromotion
+promotion ||..o{ media
+promotion ||..o{ activity
+promotionSystem ||..o{ quotationPromotionSystem
+
+package ||..o{ packagePromotion
+package ||..|{ productDetail
+package ||..o{ quotationPackage
+package ||..o{ activity
+
+product ||..o{ media
+product ||..o{ calendar
+product ||..o{ productTag
+product ||..o{ productPromotion
+product ||..o{ orderProduct
+product ||..o{ productDetail
+product ||..|| supplierProductDetail
+product ||..|| venueProductDetail
+product ||..o{ quotationProduct
+product ||..o{ activity
+
+quotation ||..o{ quotationUser
+quotation ||..o{ quotationCompany
+quotation ||..o{ quotationProduct
+quotation ||..o{ quotationPackage
+quotation ||..o{ booking
+quotation ||..o{ calendar
+quotation ||..o{ quotationPromotionSystem
+
+sitecheck ||..|| user
+sitecheck ||..|| customer
+sitecheck ||..|| event
+sitecheck ||..|| lead
+sitecheck ||..|| quotation
+sitecheck ||..|| company
+sitecheck ||..o{ sitecheckAssignee
+sitecheck ||..o{ sitecheckVenue
+
+sitecheckAssignee ||..|| sitecheck
+sitecheckAssignee ||..|| user
+
+sitecheckVenue ||..|| sitecheck
+sitecheckVenue ||..|| company
+
+quotationCompany ||..o{ activity
+
+subscription ||..o{ transaction
+subscription ||..o{ companySubscription
+subscription ||..o{ subscriptionFeature
+
+feature ||..o{ subscriptionFeature
+
+order ||..o{ calendar
+order ||..|| payment
+order ||..o{ orderProduct
+
+primaryInformation ||..o{ primaryInformation
+primaryInformation ||..o{ serviceGroupPrimaryInformation
+primaryInformation ||..o{ venueSpacePrimaryInformation
+
+eventGroup ||..o{ serviceGroup
+eventGroup ||..o{ venueSpaceEventGroup
+
+serviceGroup ||..o{ service
+serviceGroup ||..o{ serviceGroupPrimaryInformation
+serviceGroup ||..o{ supplierProductDetail
+
+service ||..o{ tag
+service ||..o{ supplierProductDetail
+service ||..o{ companyService
+
+supplierPrimaryInformation ||..o{ activity
+
+venueSpace ||..o{ venueSpacePrimaryInformation
+venueSpace ||..o{ venueSpaceEventGroup
+venueSpace ||..o{ activity
+
+venuePrimaryInformation ||..o{ activity
+
+venueSpacePrimaryInformation ||..o{ activity
+
+@enduml

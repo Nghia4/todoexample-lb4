@@ -1,0 +1,78 @@
+@startuml Todo
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "User" as user {
+    -id: ObjectID <<generated>>
+    --
+    userName : string
+    password : string
+    createdAt: Date
+    updatedAt: Date
+    isDeleted: boolean
+    role : Role
+}
+
+
+entity "Project" as project {
+    -id: ObjectID <<generated>>
+    --
+    ~ createdBy: ObjectID
+    ~ updatedBy: objectID
+    --
+    name : string
+    status: string <<ongoing | not start yet | done>>
+    createdAt: Date
+    updatedAt: Date
+    isDeleted: boolean
+}
+
+
+entity "UserProject" as userproject {
+    -id: ObjectID <<generated>>
+    --
+    ~ projectId: ObjectID
+    ~ userId: ObjectID
+    --
+    createdAt: Date
+    updatedAt: Date
+    isDeleted: boolean
+}
+
+
+entity "Task" as task {
+    -id: ObjectID <<generated>>
+    --
+    ~ projectId: ObjectID
+    ~ createdBy: ObjectID
+    ~ updatedBy: objectID
+    ~ userId: ObjectID
+    --
+    name : string
+    status: string <<ongoing | not start yet | done>>
+    linkedTo: string
+    createdAt: Date
+    updatedAt: Date
+    isDeleted: boolean
+    isCreatedByAdmin: boolean;
+
+}
+
+enum Role {
+    + ADMIN
+    + USER
+}
+
+userproject }|--|| user
+userproject }|--|| project
+
+task }|--|| project
+task }|--|| user
+
+user -- Role
+
+
+@enduml
