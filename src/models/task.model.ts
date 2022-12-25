@@ -1,6 +1,6 @@
 import {belongsTo, Entity, model, property} from '@loopback/repository';
-import {Project} from './project.model';
-import {User} from './user.model';
+import {Project, ProjectWithRelations} from './project.model';
+import {User, UserWithRelations} from './user.model';
 
 @model()
 export class Task extends Entity {
@@ -49,12 +49,6 @@ export class Task extends Entity {
   })
   updatedAt: string;
 
-  @property({
-    type: 'boolean',
-    default: false,
-  })
-  isDeleted?: boolean;
-
   @belongsTo(() => Project, {name: 'ofProject'})
   projectId: string;
 
@@ -71,6 +65,9 @@ export class Task extends Entity {
 
 export interface TaskRelations {
   // describe navigational properties here
+  user?: UserWithRelations
+  project?: ProjectWithRelations
+  linked?: TaskWithRelations
 }
 
 export type TaskWithRelations = Task & TaskRelations;

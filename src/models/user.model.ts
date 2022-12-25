@@ -1,7 +1,8 @@
-import {Entity, model, property, hasMany} from '@loopback/repository';
-import {Task} from './task.model';
-import {UserProject} from './user-project.model';
+import {Entity, hasMany, hasOne, model, property} from '@loopback/repository';
 import {RoleEnum} from './../enums/role-enum';
+import {Task, TaskWithRelations} from './task.model';
+import {UserCredentials, UserCredentialsWithRelations} from './user-credentials.model';
+import {UserProject, UserProjectWithRelations} from './user-project.model';
 
 @model()
 export class User extends Entity {
@@ -19,12 +20,6 @@ export class User extends Entity {
   userName: string;
 
   @property({
-    type: 'string',
-    required: true,
-  })
-  password: string;
-
-  @property({
     type: 'date',
     default: () => new Date(),
   })
@@ -36,11 +31,6 @@ export class User extends Entity {
   })
   updatedAt: string;
 
-  @property({
-    type: 'boolean',
-    default: false,
-  })
-  isDeleted?: boolean;
 
   @property({
     type: 'string',
@@ -56,6 +46,9 @@ export class User extends Entity {
   @hasMany(() => UserProject)
   userProjects: UserProject[];
 
+  @hasOne(() => UserCredentials)
+  userCredentials: UserCredentials;
+
   constructor(data?: Partial<User>) {
     super(data);
   }
@@ -63,6 +56,9 @@ export class User extends Entity {
 
 export interface UserRelations {
   // describe navigational properties here
+  tasks?: TaskWithRelations[]
+  userProjects?: UserProjectWithRelations[]
+  userCredentials?: UserCredentialsWithRelations
 }
 
 export type UserWithRelations = User & UserRelations;

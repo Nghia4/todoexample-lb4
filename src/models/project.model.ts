@@ -1,6 +1,6 @@
-import {Entity, model, property, hasMany} from '@loopback/repository';
-import {Task} from './task.model';
-import {UserProject} from './user-project.model';
+import {Entity, hasMany, model, property} from '@loopback/repository';
+import {Task, TaskWithRelations} from './task.model';
+import {UserProject, UserProjectWithRelations} from './user-project.model';
 
 @model()
 export class Project extends Entity {
@@ -39,11 +39,6 @@ export class Project extends Entity {
   })
   updatedAt: string;
 
-  @property({
-    type: 'boolean',
-    default: false,
-  })
-  isDeleted?: boolean;
 
   @property({
     type: 'string',
@@ -64,6 +59,8 @@ export class Project extends Entity {
 
 export interface ProjectRelations {
   // describe navigational properties here
+  userProjects?: UserProjectWithRelations[]
+  tasks?: TaskWithRelations[]
 }
 
 export type ProjectWithRelations = Project & ProjectRelations;

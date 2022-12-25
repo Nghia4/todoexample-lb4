@@ -7,7 +7,7 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -19,7 +19,7 @@ import {
   post,
   put,
   requestBody,
-  response,
+  response
 } from '@loopback/rest';
 import {SecurityBindings, securityId} from '@loopback/security';
 import set from 'lodash/set';
@@ -49,7 +49,7 @@ export class TaskController {
         'application/json': {
           schema: getModelSchemaRef(Task, {
             title: 'NewTask',
-            exclude: ['id'],
+            exclude: ['id', 'linkedToTask', 'createdAt', 'updatedAt', 'userId', 'projectId'],
           }),
         },
       },
@@ -111,7 +111,10 @@ export class TaskController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Task, {partial: true}),
+          schema: getModelSchemaRef(Task, {
+            partial: true,
+            exclude: ['linkedToTask']
+          }),
         },
       },
     })
@@ -163,7 +166,10 @@ export class TaskController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Task, {partial: true}),
+          schema: getModelSchemaRef(Task, {
+            partial: true,
+            exclude: ['linkedToTask']
+          }),
         },
       },
     })
@@ -193,9 +199,31 @@ export class TaskController {
 
   @del('/tasks/{id}')
   @response(204, {
-    description: 'Task DELETE successssss',
+    description: 'Task DELETE success',
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.taskRepository.deleteById(id);
+  }
+
+  @post('/tasks/link/{id}/{id2}')
+  @response(204, {
+    description: 'Task link ',
+    content: {'application/json': {schema: getModelSchemaRef(Task)}},
+  })
+  async linkedToTask(
+    @param.path.string('id') id: string,
+    @param.path.string('id2') id2: string,
+  ): Promise<void> {
+    const firstProject: Task = await this.taskRepository.findById(id);
+    const secondProject: Task = await this.taskRepository.findById(id2);
+    if (String(firstProject.projectId) == String(secondProject.projectId)) {
+      if (String(firstProject.name) == String(secondProject.name)) {
+        throw new HttpErrors.Unauthorized('Can not link same task id')
+      } else {
+        return this.taskRepository.updateById(id, {linkedToTask: id2})
+      }
+    } else {
+      throw new HttpErrors.Unauthorized('Can not link two task with different project');
+    }
   }
 }

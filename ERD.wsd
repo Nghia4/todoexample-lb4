@@ -9,10 +9,8 @@ entity "User" as user {
     -id: ObjectID <<generated>>
     --
     userName : string
-    password : string
     createdAt: Date
     updatedAt: Date
-    isDeleted: boolean
     role : Role
 }
 
@@ -27,7 +25,6 @@ entity "Project" as project {
     status: string <<ongoing | not start yet | done>>
     createdAt: Date
     updatedAt: Date
-    isDeleted: boolean
 }
 
 
@@ -39,9 +36,23 @@ entity "UserProject" as userproject {
     --
     createdAt: Date
     updatedAt: Date
-    isDeleted: boolean
 }
 
+entity "UserWithPassword" as userwithpassword {
+    -id: ObjectID <<generated>>
+    --
+    ~ userId: ObjectID
+    --
+    password: string
+}
+
+entity "UserCredentials" as usercredentials {
+    -id: ObjectID <<generated>>
+    --
+    ~ userId: ObjectID
+    --
+    password: string
+}
 
 entity "Task" as task {
     -id: ObjectID <<generated>>
@@ -50,13 +61,12 @@ entity "Task" as task {
     ~ createdBy: ObjectID
     ~ updatedBy: objectID
     ~ userId: ObjectID
+    ~ linkedToTask: ObjectID
     --
     name : string
     status: string <<ongoing | not start yet | done>>
-    linkedTo: string
     createdAt: Date
     updatedAt: Date
-    isDeleted: boolean
     isCreatedByAdmin: boolean;
 
 }
@@ -74,5 +84,7 @@ task }|--|| user
 
 user -- Role
 
+usercredentials ||--|| user
+userwithpassword ||--|| user
 
 @enduml

@@ -1,6 +1,6 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
-import {Project} from './project.model';
-import {User} from './user.model';
+import {belongsTo, Entity, model, property} from '@loopback/repository';
+import {Project, ProjectWithRelations} from './project.model';
+import {User, UserWithRelations} from './user.model';
 
 @model()
 export class UserProject extends Entity {
@@ -23,6 +23,8 @@ export class UserProject extends Entity {
 
 export interface UserProjectRelations {
   // describe navigational properties here
+  user?: UserWithRelations
+  project?: ProjectWithRelations
 }
 
 export type UserProjectWithRelations = UserProject & UserProjectRelations;

@@ -8,7 +8,7 @@ import {
 } from '@loopback/repository';
 import {
   del, get,
-  getModelSchemaRef, HttpErrors, param, patch, post, put, requestBody,
+  getModelSchemaRef, param, patch, post, put, requestBody,
   response
 } from '@loopback/rest';
 
@@ -21,7 +21,7 @@ import {
 import {authenticate} from '@loopback/authentication';
 import {inject} from '@loopback/core';
 import {pick} from 'lodash';
-import {User} from '../models';
+import {User, UserWithPassword} from '../models';
 import {UserRepository} from '../repositories';
 import {BcryptHasher} from '../services/hash-password';
 import {validateCredentials} from '../services/validator';
@@ -79,29 +79,31 @@ export class UserController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(User, {
+          schema: getModelSchemaRef(UserWithPassword, {
             title: 'NewUser',
             exclude: ['id'],
           }),
         },
       },
     })
-    userData: Omit<User, 'id'>,
+    userData: Omit<UserWithPassword, 'id'>,
   ) {
     validateCredentials(pick(userData, ['userName', 'password']));
 
-    const existedUser = await this.userRepository.findOne({
-      where: {userName: userData.userName},
-    });
-    if (existedUser) {
-      throw new HttpErrors.UnprocessableEntity('username existed');
-    }
+    // const existedUser = await this.userRepository.findOne({
+    //   where: {userName: userData.userName},
+    // });
+    // if (existedUser) {
+    //   throw new HttpErrors.UnprocessableEntity('username existed');
+    // }
 
     const hashedPassword = await this.hasher.hashPassword(userData.password);
     const newUser = await this.userRepository.create({
       userName: userData.userName,
-      password: hashedPassword,
       role: userData.role,
+    });
+    await this.userRepository.userCredentials(newUser?.id).create({
+      password: hashedPassword,
     });
     return newUser;
   }

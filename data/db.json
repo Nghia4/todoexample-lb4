@@ -1,30 +1,31 @@
 {
   "ids": {
-    "User": 5,
-    "Project": 5,
-    "Task": 4,
-    "UserProject": 2
+    "User": 9,
+    "Project": 7,
+    "Task": 9,
+    "UserProject": 2,
+    "UserCredentials": 5
   },
   "models": {
     "User": {
-      "1": "{\"userName\":\"string\",\"password\":\"$2a$10$XVK5RDVZsi9A26/XajnvH.spgFG/ilpZK7jq2fy398.cnB8LXdvtS\",\"createdAt\":\"2022-12-23T18:35:00.641Z\",\"updatedAt\":\"2022-12-23T18:35:00.641Z\",\"isDeleted\":false,\"role\":\"user\",\"id\":\"1\"}",
-      "2": "{\"userName\":\"nghia\",\"password\":\"$2a$10$8tsYuJ1tCuOPX/DvLJboIO/sgcJeeNP7ngVTNQn.Qn5bn/TGH0d5S\",\"createdAt\":\"2022-12-23T19:24:19.529Z\",\"updatedAt\":\"2022-12-23T19:24:19.529Z\",\"isDeleted\":false,\"role\":\"user\",\"id\":\"2\"}",
-      "3": "{\"userName\":\"nghia1\",\"password\":\"$2a$10$jibaMcSa/TGekRDoeSsS6uWvZs/nrPGY5szfWTg6EkwcvwcyFlTA.\",\"createdAt\":\"2022-12-23T19:38:39.395Z\",\"updatedAt\":\"2022-12-23T19:38:39.395Z\",\"isDeleted\":false,\"role\":\"admin\",\"id\":\"3\"}",
-      "4": "{\"userName\":\"nghia2\",\"password\":\"$2a$10$MlgBv7zJfqJ4iEWFFtUrg.CQ.vaHPist70ooZ2W1rQ1Mhg1wkMId.\",\"createdAt\":\"2022-12-24T06:42:21.614Z\",\"updatedAt\":\"2022-12-24T06:42:21.614Z\",\"isDeleted\":false,\"role\":\"user\",\"id\":\"4\"}"
+      "7": "{\"userName\":\"tester\",\"createdAt\":\"2022-12-25T16:29:32.344Z\",\"updatedAt\":\"2022-12-25T16:29:32.344Z\",\"role\":\"user\",\"id\":\"7\"}",
+      "8": "{\"userName\":\"tester2\",\"createdAt\":\"2022-12-25T18:57:40.985Z\",\"updatedAt\":\"2022-12-25T18:57:40.985Z\",\"role\":\"admin\",\"id\":\"8\"}"
     },
     "Project": {
-      "1": "{\"name\":\"string\",\"createdBy\":\"2\",\"updatedBy\":\"2\",\"createdAt\":\"2022-12-23T19:32:42.153Z\",\"updatedAt\":\"2022-12-23T19:32:42.153Z\",\"isDeleted\":true,\"status\":\"string\",\"id\":\"1\"}",
-      "2": "{\"name\":\"string2\",\"createdBy\":\"3\",\"updatedBy\":\"3\",\"createdAt\":\"2022-12-23T20:17:48.131Z\",\"updatedAt\":\"2022-12-23T20:17:48.131Z\",\"isDeleted\":true,\"status\":\"string\",\"id\":\"2\"}",
-      "3": "{\"name\":\"string3\",\"createdBy\":\"3\",\"updatedBy\":\"3\",\"createdAt\":\"2022-12-23T20:17:48.131Z\",\"updatedAt\":\"2022-12-23T20:17:48.131Z\",\"isDeleted\":true,\"status\":\"string\",\"id\":\"3\"}",
-      "4": "{\"name\":\"string\",\"createdBy\":\"2\",\"updatedBy\":\"2\",\"createdAt\":\"2022-12-24T05:49:44.124Z\",\"updatedAt\":\"2022-12-24T05:49:44.124Z\",\"isDeleted\":true,\"status\":\"string\",\"id\":\"4\"}"
+      "5": "{\"name\":\"project1\",\"createdBy\":\"7\",\"updatedBy\":\"7\",\"createdAt\":\"2022-12-25T17:14:17.637Z\",\"updatedAt\":\"2022-12-25T17:14:17.637Z\",\"status\":\"ongoing\",\"id\":\"5\"}",
+      "6": "{\"name\":\"project2\",\"createdBy\":\"7\",\"updatedBy\":\"7\",\"createdAt\":\"2022-12-25T17:14:17.637Z\",\"updatedAt\":\"2022-12-25T17:14:17.637Z\",\"status\":\"ongoing\",\"id\":\"6\"}"
     },
     "Task": {
-      "1": "{\"name\":\"string\",\"isCreatedByAdmin\":true,\"description\":\"string\",\"status\":\"string\",\"createdBy\":\"2\",\"createdAt\":\"2022-12-24T06:02:32.589Z\",\"updatedBy\":\"2\",\"updatedAt\":\"2022-12-24T06:02:32.589Z\",\"isDeleted\":true,\"projectId\":\"string\",\"userId\":\"string\",\"linkedTo\":\"string\",\"id\":\"1\"}",
-      "2": "{\"name\":\"string\",\"isCreatedByAdmin\":false,\"description\":\"string\",\"status\":\"string\",\"createdBy\":\"2\",\"createdAt\":\"2022-12-24T06:02:32.589Z\",\"updatedBy\":\"2\",\"updatedAt\":\"2022-12-24T06:02:32.589Z\",\"isDeleted\":true,\"projectId\":\"string\",\"userId\":\"string\",\"linkedTo\":\"string\",\"id\":\"2\"}",
-      "3": "{\"name\":\"string\",\"isCreatedByAdmin\":true,\"status\":\"string\",\"createdBy\":\"string\",\"createdAt\":\"2022-12-24T06:45:27.548Z\",\"updatedBy\":\"4\",\"updatedAt\":\"2022-12-24T06:52:44.601Z\",\"isDeleted\":true,\"projectId\":\"string\",\"userId\":\"4\",\"linkedToTask\":\"2\",\"id\":\"3\"}"
+      "4": "{\"name\":\"task1\",\"isCreatedByAdmin\":false,\"status\":\"ongoing\",\"createdBy\":\"7\",\"createdAt\":\"2022-12-25T17:16:39.271Z\",\"updatedBy\":\"7\",\"updatedAt\":\"2022-12-25T17:22:20.950Z\",\"projectId\":\"5\",\"userId\":\"string\",\"linkedToTask\":\"5\",\"id\":\"4\"}",
+      "5": "{\"name\":\"task2\",\"isCreatedByAdmin\":false,\"status\":\"ongoing\",\"createdBy\":\"7\",\"createdAt\":\"2022-12-25T17:16:39.271Z\",\"updatedBy\":\"7\",\"updatedAt\":\"2022-12-25T17:20:28.517Z\",\"projectId\":\"5\",\"userId\":\"string\",\"linkedToTask\":\"4\",\"id\":\"5\"}",
+      "6": "{\"name\":\"task3\",\"isCreatedByAdmin\":false,\"status\":\"ongoing\",\"createdBy\":\"7\",\"createdAt\":\"2022-12-25T17:16:39.271Z\",\"updatedBy\":\"7\",\"updatedAt\":\"2022-12-25T17:23:06.253Z\",\"projectId\":\"6\",\"userId\":\"string\",\"linkedToTask\":\"7\",\"id\":\"6\"}",
+      "7": "{\"name\":\"task4\",\"isCreatedByAdmin\":true,\"status\":\"string\",\"createdBy\":\"7\",\"createdAt\":\"2022-12-25T18:44:15.942Z\",\"updatedBy\":\"7\",\"updatedAt\":\"2022-12-25T19:13:17.024Z\",\"projectId\":\"6\",\"userId\":\"string\",\"linkedToTask\":\"6\",\"id\":\"7\"}",
+      "8": "{\"name\":\"task created by admin\",\"isCreatedByAdmin\":true,\"status\":\"ongoing\",\"createdBy\":\"7\",\"createdAt\":\"2022-12-25T18:55:53.651Z\",\"updatedBy\":\"8\",\"updatedAt\":\"2022-12-25T19:10:54.479Z\",\"id\":\"8\",\"userId\":\"7\"}"
     },
-    "UserProject": {
-      "1": "{\"projectId\":\"3\",\"userId\":\"3\",\"id\":\"1\"}"
+    "UserProject": {},
+    "UserCredentials": {
+      "3": "{\"password\":\"$2a$10$/BoWDh8tVfgmp/vl4LMLpe4Stw56slpOjpR2XlpCwANmi7S.Lj/Ru\",\"userId\":\"7\",\"id\":\"3\"}",
+      "4": "{\"password\":\"$2a$10$ihg8P7Jl1bCrsvjCGEHzMuELaeSV9EJ/T6JnOd2FGV8DOT65ysJ7W\",\"userId\":\"8\",\"id\":\"4\"}"
     }
   }
 }

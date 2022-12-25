@@ -1,12 +1,12 @@
-import {inject, Getter} from '@loopback/core';
+import {Getter, inject} from '@loopback/core';
 import {
-  DefaultCrudRepository,
-  repository,
-  HasManyRepositoryFactory,
+  DefaultCrudRepository, HasManyRepositoryFactory,
+  HasOneRepositoryFactory, repository
 } from '@loopback/repository';
 import {DbDataSource} from '../datasources';
-import {User, UserRelations, Task, UserProject} from '../models';
+import {Task, User, UserCredentials, UserProject, UserRelations} from '../models';
 import {TaskRepository} from './task.repository';
+import {UserCredentialsRepository} from './user-credentials.repository';
 import {UserProjectRepository} from './user-project.repository';
 
 export class UserRepository extends DefaultCrudRepository<
@@ -24,12 +24,15 @@ export class UserRepository extends DefaultCrudRepository<
     typeof User.prototype.id
   >;
 
+  public readonly userCredentials: HasOneRepositoryFactory<UserCredentials, typeof User.prototype.id>;
+
   constructor(
     @inject('datasources.db') dataSource: DbDataSource,
     @repository.getter('TaskRepository')
     protected taskRepositoryGetter: Getter<TaskRepository>,
     @repository.getter('UserProjectRepository')
     protected userProjectRepositoryGetter: Getter<UserProjectRepository>,
+    @repository.getter('UserCredentialsRepository') protected userCredentialsRepositoryGetter: Getter<UserCredentialsRepository>,
   ) {
     super(User, dataSource);
     this.userProjects = this.createHasManyRepositoryFactoryFor(
@@ -45,5 +48,20 @@ export class UserRepository extends DefaultCrudRepository<
       taskRepositoryGetter,
     );
     this.registerInclusionResolver('tasks', this.tasks.inclusionResolver);
+    this.userCredentials = this.createHasOneRepositoryFactoryFor('userCredentials', userCredentialsRepositoryGetter);
+    this.registerInclusionResolver('userCredentials', this.userCredentials.inclusionResolver);
+  }
+
+  async findCredentials(
+    userId: typeof User.prototype.id,
+  ): Promise<UserCredentials | undefined> {
+    try {
+      return await this.userCredentials(userId).get();
+    } catch (err) {
+      if (err.code === 'ENTITY_NOT_FOUND') {
+        return undefined;
+      }
+      throw err;
+    }
   }
 }
