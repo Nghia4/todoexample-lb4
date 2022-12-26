@@ -20,6 +20,7 @@ import {
 
 import {authenticate} from '@loopback/authentication';
 import {inject} from '@loopback/core';
+import {HttpErrors} from '@loopback/rest';
 import {pick} from 'lodash';
 import {User, UserWithPassword} from '../models';
 import {UserRepository} from '../repositories';
@@ -90,12 +91,12 @@ export class UserController {
   ) {
     validateCredentials(pick(userData, ['userName', 'password']));
 
-    // const existedUser = await this.userRepository.findOne({
-    //   where: {userName: userData.userName},
-    // });
-    // if (existedUser) {
-    //   throw new HttpErrors.UnprocessableEntity('username existed');
-    // }
+    const existedUser = await this.userRepository.findOne({
+      where: {userName: userData.userName},
+    });
+    if (existedUser) {
+      throw new HttpErrors.UnprocessableEntity('username existed');
+    }
 
     const hashedPassword = await this.hasher.hashPassword(userData.password);
     const newUser = await this.userRepository.create({

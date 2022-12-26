@@ -3,9 +3,11 @@ import {juggler} from '@loopback/repository';
 
 const config = {
   name: 'db',
-  connector: 'memory',
-  localStorage: '',
-  file: './data/db.json',
+  connector: 'mongodb',
+  // localStorage: '',
+  // file: './data/db.json',
+  url: 'mongodb+srv://nghia1:nghia123@baitap.mgnbrjn.mongodb.net/todoexample',
+  useNewUrlParser: true,
 };
 // Observe application's life cycle to disconnect the datasource when
 // application is stopped. This allows the application to be shut down
@@ -14,8 +16,7 @@ const config = {
 @lifeCycleObserver('datasource')
 export class DbDataSource
   extends juggler.DataSource
-  implements LifeCycleObserver
-{
+  implements LifeCycleObserver {
   static dataSourceName = 'db';
   static readonly defaultConfig = config;
 

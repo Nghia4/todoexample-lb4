@@ -24,7 +24,9 @@ export class UserRepository extends DefaultCrudRepository<
     typeof User.prototype.id
   >;
 
-  public readonly userCredentials: HasOneRepositoryFactory<UserCredentials, typeof User.prototype.id>;
+  public readonly userCredentials: HasOneRepositoryFactory<
+    UserCredentials,
+    typeof User.prototype.id>;
 
   constructor(
     @inject('datasources.db') dataSource: DbDataSource,
@@ -43,13 +45,22 @@ export class UserRepository extends DefaultCrudRepository<
       'userProjects',
       this.userProjects.inclusionResolver,
     );
+
     this.tasks = this.createHasManyRepositoryFactoryFor(
       'tasks',
       taskRepositoryGetter,
     );
-    this.registerInclusionResolver('tasks', this.tasks.inclusionResolver);
-    this.userCredentials = this.createHasOneRepositoryFactoryFor('userCredentials', userCredentialsRepositoryGetter);
-    this.registerInclusionResolver('userCredentials', this.userCredentials.inclusionResolver);
+    this.registerInclusionResolver(
+      'tasks',
+      this.tasks.inclusionResolver
+    );
+
+    this.userCredentials = this.createHasOneRepositoryFactoryFor(
+      'userCredentials',
+      userCredentialsRepositoryGetter);
+    this.registerInclusionResolver(
+      'userCredentials',
+      this.userCredentials.inclusionResolver);
   }
 
   async findCredentials(
