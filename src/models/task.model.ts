@@ -1,4 +1,5 @@
 import {belongsTo, Entity, model, property} from '@loopback/repository';
+import {Status} from '../enums/status-enum';
 import {Project, ProjectWithRelations} from './project.model';
 import {User, UserWithRelations} from './user.model';
 
@@ -23,12 +24,6 @@ export class Task extends Entity {
 
   @property({
     type: 'string',
-    default: "ongoing",
-  })
-  status?: string;
-
-  @property({
-    type: 'string',
   })
   createdBy: string;
 
@@ -48,6 +43,14 @@ export class Task extends Entity {
     default: () => new Date(),
   })
   updatedAt: string;
+
+  @property({
+    type: 'string',
+    jsonSchema: {
+      enum: Object.values(Status),
+    },
+  })
+  status?: Status;
 
   @belongsTo(() => Project, {name: 'ofProject'})
   projectId: string;

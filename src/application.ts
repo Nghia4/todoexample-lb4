@@ -1,17 +1,20 @@
+import {AuthenticationComponent} from '@loopback/authentication';
+import {SECURITY_SCHEME_SPEC} from '@loopback/authentication-jwt';
 import {BootMixin} from '@loopback/boot';
 import {ApplicationConfig} from '@loopback/core';
-import {
-  RestExplorerBindings,
-  RestExplorerComponent,
-} from '@loopback/rest-explorer';
+import {CronComponent} from '@loopback/cron';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
+import {
+  RestExplorerBindings,
+  RestExplorerComponent
+} from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
+import * as CronJobs from './cronjobs';
 import {MySequence} from './sequence';
-import {AuthenticationComponent} from '@loopback/authentication';
 import {MyJWTAuthenticationComponent} from './services/jwt-authentication';
-import {SECURITY_SCHEME_SPEC} from '@loopback/authentication-jwt';
+
 
 export {ApplicationConfig};
 
@@ -45,7 +48,12 @@ export class TodoAppApplication extends BootMixin(
         nested: true,
       },
     };
+    Object.entries(CronJobs).forEach(([_key, value]) => {
+      const cronJob = value;
+      this.add(cronJob);
+    });
     this.addSecuritySpec();
+    this.component(CronComponent);
   }
 
   addSecuritySpec(): void {

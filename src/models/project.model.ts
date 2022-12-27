@@ -1,4 +1,5 @@
 import {Entity, hasMany, model, property} from '@loopback/repository';
+import {Status} from '../enums/status-enum';
 import {Task, TaskWithRelations} from './task.model';
 import {UserProject, UserProjectWithRelations} from './user-project.model';
 
@@ -39,12 +40,13 @@ export class Project extends Entity {
   })
   updatedAt: string;
 
-
   @property({
     type: 'string',
-    default: 'ongoing',
+    jsonSchema: {
+      enum: Object.values(Status),
+    },
   })
-  status?: string;
+  status?: Status;
 
   @hasMany(() => Task)
   tasks: Task[];

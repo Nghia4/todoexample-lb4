@@ -22,7 +22,7 @@ entity "Project" as project {
     ~ updatedBy: objectID
     --
     name : string
-    status: string <<ongoing | not start yet | done>>
+    status: Status
     createdAt: Date
     updatedAt: Date
 }
@@ -64,12 +64,19 @@ entity "Task" as task {
     ~ linkedToTask: ObjectID
     --
     name : string
-    status: string <<ongoing | not start yet | done>>
+    status: Status
     createdAt: Date
     updatedAt: Date
     isCreatedByAdmin: boolean;
 
 }
+
+enum Status {
+    + DONE
+    + NOT_START_YET
+    + ONGOING
+}
+
 
 enum Role {
     + ADMIN
@@ -83,6 +90,8 @@ task }|--|| project
 task }|--|| user
 
 user -- Role
+task -- Status
+project -- Status
 
 usercredentials ||--|| user
 userwithpassword ||--|| user
